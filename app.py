@@ -17,13 +17,18 @@ import unicodedata
 import warnings
 
 # ============================================================
-# DASHBOARD ARQTEC – COMPLETO COM NOTIFICAÇÕES CORRIGIDAS
+# DASHBOARD ARQTEC – COMPLETO COM CORREÇÃO PARA STREAMLIT CLOUD
 # ============================================================
 
 # ============================================================
 # 0. CONFIGURAÇÕES GLOBAIS
 # ============================================================
-PASTA_RAIZ        = r"C:\Users\Maikon\Nextcloud\09 - ENGENHARIA\08 - DASHBOARD"
+PASTA_RAIZ_WINDOWS = r"C:\Users\Maikon\Nextcloud\09 - ENGENHARIA\08 - DASHBOARD"
+if os.path.exists(PASTA_RAIZ_WINDOWS):
+    PASTA_RAIZ = PASTA_RAIZ_WINDOWS
+else:
+    PASTA_RAIZ = os.getcwd()
+
 ARQ_USUARIOS      = os.path.join(PASTA_RAIZ, "usuarios.json")
 ARQ_CONFIG        = os.path.join(PASTA_RAIZ, "dashboard_config.json")
 COR_ARQTEC        = "#E30613"
@@ -31,7 +36,6 @@ COR_META_PADRAO   = "#2ECC71"
 TEMPO_ATUALIZACAO = 5   # minutos (padrão)
 SENHA_PLANILHA    = "aamm"
 
-# Nome da pasta do programa (será excluída da lista de setores)
 PASTA_PROGRAMA    = os.path.basename(os.path.dirname(os.path.abspath(__file__)))
 
 PALETA_DIVERSA = ["#E30613", "#3498DB", "#2ECC71", "#F1C40F", "#9B59B6", "#E67E22", "#1ABC9C", "#34495E", "#E74C3C", "#7F8C8D"]
@@ -991,8 +995,6 @@ def desenhar_graficos():
                 continue
             try:
                 if conf["tipo_fonte"] == "URL":
-                    # Para URLs, já temos cache; podemos forçar uma verificação simples
-                    # mas para o hash vamos usar os dados brutos carregados
                     df_c = carregar_planilha_com_cache_url(conf["url"])
                     if not df_c.empty:
                         hash_atual = hashlib.md5(df_c.head(1000).to_csv(index=False).encode()).hexdigest()
